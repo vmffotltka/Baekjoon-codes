@@ -1,0 +1,15 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int t; cin >> t; while (t--) {
+		int a, c, r, g, b; cin >> a >> c >> r >> g >> b;
+		int R = a * ((r + 1) * (r + 1) + g * g + b * b) + c * min({ r + 1, g, b });
+		int G = a * (r * r + (g + 1) * (g + 1) + b * b) + c * min({ r, g + 1, b });
+		int B = a * (r * r + g * g + (b + 1) * (b + 1)) + c * min({ r, g, b + 1 });
+		if (max({ R, G, B }) == R) cout << "RED\n";
+		else if (max({ R, G, B }) == G) cout << "GREEN\n";
+		else cout << "BLUE\n";
+	}
+}
