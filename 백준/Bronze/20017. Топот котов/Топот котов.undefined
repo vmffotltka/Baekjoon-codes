@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int arr[20][10];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m, a, ans = 0; cin >> n >> m >> a;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			cin >> arr[i][j];
+			if (i != 0 && arr[i - 1][j] * 2 < arr[i][j]) ans += a;
+		}
+	}
+	cout << ans;
+}
