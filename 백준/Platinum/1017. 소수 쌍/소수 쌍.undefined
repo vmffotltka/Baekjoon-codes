@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool prime[2001], visited[50];
+int N, matched[50], First;
+vector<int> edge[50], A, B;
+set<int> answer;
+
+bool dfs(int u) {
+	if (u == 0) return false;
+	for (int v : edge[u]) {
+		if (visited[v]) continue;
+		visited[v] = true;
+
+		if (matched[v] == -1 || dfs(matched[v])) {
+			matched[v] = u;
+			return true;
+		}
+	}
+	return false;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	memset(prime, true, sizeof(prime));
+	for (int i = 2; i <= 2000; i++) {
+		if (!prime[i]) continue;
+		for (int j = i * 2; j <= 2000; j += i) {
+			prime[j] = false;
+		}
+	}
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		int p; cin >> p;
+		if (!i) First = p;
+		if ((First & 1) == (p & 1)) A.push_back(p);
+		else B.push_back(p);
+	}
+	for (int i = 0; i < A.size(); i++) {
+		for (int j = 0; j < B.size(); j++) {
+			if (prime[A[i] + B[j]]) {
+				edge[i].push_back(j);
+			}
+		}
+	}
+	for (int i = 0; i < B.size(); i++) {
+		if (!prime[A[0] + B[i]]) continue;
+		memset(matched, -1, sizeof(matched));
+		int matchCount = 1;
+
+		matched[i] = 0;
+		for (int i = 1; i < A.size(); i++) {
+			memset(visited, false, sizeof(visited));
+			
+			if (dfs(i)) matchCount++;
+		}
+		if (matchCount == N / 2)
+			answer.insert(B[i]);
+	}
+
+	if (answer.empty())
+		cout << -1;
+	else {
+		for (auto i : answer) cout << i << " ";
+	}
+}
