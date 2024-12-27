@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	bool tri = false;
+	while (true) {
+		int ans = 0;
+		while (true) {
+			string s1, s2; int n; char c;
+			cin >> s1;
+			if (s1 == "0") break;
+			if (s1 == "#") { tri = true; break; }
+			cin >> s2 >> n >> c;
+			if (c == 'F') ans += n * 2;
+			else if (c == 'B') ans += n + n / 2 + (n & 1 ? 1 : 0);
+			else ans += max(500, n);
+		}
+		if (tri) break;
+		cout << ans << '\n';
+	}
+}
