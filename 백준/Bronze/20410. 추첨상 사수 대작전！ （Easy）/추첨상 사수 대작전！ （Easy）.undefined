@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int m, seed, x1, x2; cin >> m >> seed >> x1 >> x2;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < m; j++) {
+			int p1 = (i * seed + j) % m;
+			int p2 = (i * p1 + j) % m;
+			if (p1 == x1 && p2 == x2) {
+				cout << i << " " << j;
+				return 0;
+			}
+		}
+	}
+}
