@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX = 500001;
+int dp[50][MAX];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n; cin >> n;
+	dp[n - 1][0] = -1;
+	for (int i = 0; i < n; i++) {
+		int p; cin >> p;
+		if (i) {
+			for (int j = 0; j < MAX; j++) {
+				if (!dp[i - 1][j]) continue;
+				dp[i][j] = max(dp[i][j], dp[i - 1][j]);
+				if (j + p < MAX)
+					dp[i][j + p] = max(dp[i][j + p], dp[i - 1][j] + p);
+				dp[i][abs(j - p)] = max(dp[i][abs(j - p)], dp[i - 1][j] + max(0, p - j));
+			}
+		}
+		dp[i][p] = max(dp[i][p], p);
+	}
+	cout << dp[n - 1][0];
+}
