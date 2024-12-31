@@ -1,0 +1,11 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	string s; cin >> s;
+	cout << (s[0] == 'I' ? 'E' : 'I');
+	cout << (s[1] == 'S' ? 'N' : 'S');
+	cout << (s[2] == 'T' ? 'F' : 'T');
+	cout << (s[3] == 'J' ? 'P' : 'J');
+}
