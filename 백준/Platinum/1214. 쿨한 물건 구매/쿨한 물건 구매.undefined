@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	long long d, p, q; cin >> d >> p >> q;
+	if (p < q) swap(p, q);
+	long long ans = d + p - (d % p);
+	if (ans == d) {
+		cout << d;
+		return 0;
+	}
+	for (int i = 0; i <= min(d, p * q); i += p) {
+		if ((d - i) % q == 0) {
+			cout << d;
+			return 0;
+		}
+		ans = min(ans, d + q - ((d - i) % q));
+	}
+	cout << ans;
+}
