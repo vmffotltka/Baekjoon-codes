@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, mx = INT_MAX, ans = 0; cin >> n;
+	for (int i = 0; i < n; i++) {
+		int p; cin >> p;
+		if (mx > p) mx = p;
+		else ans += p - mx;
+	}
+	cout << ans;
+}
