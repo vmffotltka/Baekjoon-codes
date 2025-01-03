@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int vis[100000], arr[100000];
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int n; cin >> n;
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    vector<pair<int, int>> v;
+    int mx = 0, neg = 0, cnt = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        if (neg && arr[i] >= 0) {
+            for (int j = i; j > max(-1, i - neg * 2); j--)
+                if (!vis[j]++) cnt++;
+            if (mx < neg) {
+                while (!v.empty()) {
+                    auto [len, idx] = v.back(); v.pop_back();
+                    for (int j = idx; j > max(-1, idx - len * 2); j--)
+                        if (!vis[j]++) cnt++;
+                }
+                v.push_back({ neg, i });
+            }
+            else if (mx == neg) {
+                v.push_back({ neg, i });
+            }
+            mx = max(mx, neg);
+            neg = 0;
+        }
+        else if (arr[i] < 0) neg++;
+    }
+    int ans = cnt;
+    for (auto [len, idx] : v) {
+        int cnt2 = cnt;
+        for (int i = idx; i > max(-1, idx - len * 3); i--)
+            if (!vis[i]) cnt2++;
+        ans = max(ans, cnt2);
+    }
+    cout << ans;
+}
