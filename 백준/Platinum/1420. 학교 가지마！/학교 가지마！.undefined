@@ -1,0 +1,134 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 987654321;
+int numRows, numCols, totalVertices;
+char grid[100][100];
+int directions[4][2] = { {0, -1}, {0, 1}, {1, 0}, {-1, 0} };
+
+struct FlowEdge {
+    int to, capacity, flow;
+    FlowEdge* reverse;
+
+    FlowEdge(int _to, int _cap) : to(_to), capacity(_cap), flow(0), reverse(nullptr) {}
+
+    int ResidualCapacity() const {
+        return capacity - flow;
+    }
+
+    void PushFlow(int amount) {
+        flow += amount;
+        reverse->flow -= amount;
+    }
+};
+
+vector<vector<FlowEdge*>> graph;
+
+void AddEdge(int from, int to, int cap) {
+    FlowEdge* forward = new FlowEdge(to, cap);
+    FlowEdge* backward = new FlowEdge(from, 0);
+    forward->reverse = backward;
+    backward->reverse = forward;
+    graph[from].push_back(forward);
+    graph[to].push_back(backward);
+}
+
+int ComputeMinimumCut(int source, int sink) {
+    int totalFlow = 0;
+    while (true) {
+        vector<int> parent(totalVertices, -1);
+        vector<FlowEdge*> path(totalVertices);
+        queue<int> q;
+        q.push(source);
+        parent[source] = source;
+
+        while (!q.empty() && parent[sink] == -1) {
+            int curr = q.front();
+            q.pop();
+
+            for (FlowEdge* edge : graph[curr]) {
+                int next = edge->to;
+                if (edge->ResidualCapacity() > 0 && parent[next] == -1) {
+                    parent[next] = curr;
+                    path[next] = edge;
+                    q.push(next);
+                }
+            }
+        }
+
+        if (parent[sink] == -1) break;
+
+        int flow = INF;
+        for (int v = sink; v != source; v = parent[v]) {
+            flow = min(flow, path[v]->ResidualCapacity());
+        }
+
+        for (int v = sink; v != source; v = parent[v]) {
+            path[v]->PushFlow(flow);
+        }
+
+        totalFlow += flow;
+    }
+    return totalFlow;
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> numRows >> numCols;
+    totalVertices = numRows * numCols * 2;
+    graph.resize(totalVertices);
+
+    for (int i = 0; i < totalVertices; i += 2) {
+        AddEdge(i, i + 1, 1);
+    }
+
+    pair<int, int> sourcePos = { -1, -1 }, sinkPos = { -1, -1 };
+    for (int r = 0; r < numRows; ++r) {
+        string line;
+        cin >> line;
+        for (int c = 0; c < numCols; ++c) {
+            grid[r][c] = line[c];
+            if (grid[r][c] == 'K') sourcePos = { r, c };
+            else if (grid[r][c] == 'H') sinkPos = { r, c };
+        }
+    }
+
+    if (sourcePos.first == -1 || sinkPos.first == -1) {
+        cout << "-1\n";
+        return 0;
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        int nr = sourcePos.first + directions[i][0];
+        int nc = sourcePos.second + directions[i][1];
+        if (nr == sinkPos.first && nc == sinkPos.second) {
+            cout << -1;
+            return 0;
+        }
+    }
+
+    for (int r = 0; r < numRows; ++r) {
+        for (int c = 0; c < numCols; ++c) {
+            if (grid[r][c] == '#') continue;
+
+            int uIn = ((r * numCols) + c) * 2;
+            int uOut = uIn + 1;
+
+            for (int i = 0; i < 4; ++i) {
+                int nr = r + directions[i][0];
+                int nc = c + directions[i][1];
+
+                if (nr < 0 || nr >= numRows || nc < 0 || nc >= numCols) continue;
+                if (grid[nr][nc] == '#') continue;
+
+                int vIn = ((nr * numCols) + nc) * 2;
+                AddEdge(uOut, vIn, INF);
+            }
+        }
+    }
+
+    int sourceOut = ((sourcePos.first * numCols) + sourcePos.second) * 2 + 1;
+    int sinkIn = ((sinkPos.first * numCols) + sinkPos.second) * 2;
+
+    cout << ComputeMinimumCut(sourceOut, sinkIn);
+}
