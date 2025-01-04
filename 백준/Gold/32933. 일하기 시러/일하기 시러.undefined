@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int A[100], B[100], C[100], dp[51][100], mx[51];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m, k; cin >> n >> m >> k;
+	for (int i = 0; i < k; i++) {
+		cin >> A[i] >> B[i] >> C[i];
+	}
+	for (int i = 1; i <= m; i++) {
+		for (int j = 0; j < k; j++) {
+			if (i >= A[j])
+				dp[i][j] = max(dp[i][j], mx[i - A[j]] + C[j]);
+			if (i >= B[j] && dp[i - B[j]][j])
+				dp[i][j] = max(dp[i][j], dp[i - B[j]][j] + C[j]);
+			mx[i] = max(mx[i], dp[i][j]);
+		}
+	}
+	cout << mx[m] * n;
+}
