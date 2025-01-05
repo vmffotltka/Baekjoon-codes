@@ -1,0 +1,11 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cout.precision(9); cout << fixed;
+	int t; cin >> t; while (t--) {
+		double p, c; cin >> p >> c;
+		cout << p / (1 + c / 100) << '\n';
+	}
+}
