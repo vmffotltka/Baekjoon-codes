@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int n, k; cin >> n >> k;
+    double sum = 0;
+    for (int i = 0; i < k; i++) {
+        int p; cin >> p;
+        sum += p;
+    }
+    cout << (sum - (n - k) * 3.0) / n << " " << (sum + (n - k) * 3.0) / n;
+}
