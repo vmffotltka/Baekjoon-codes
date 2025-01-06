@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7, BASE = 31;
+int L; string S;
+
+bool hasDuplicate(int len) {
+	long long hash = 0, power = 1;
+	unordered_map<long long, vector<int>> hashTable;
+
+	for (int i = 0; i < len; i++) {
+		hash = (hash * BASE + (S[i] - 'a' + 1)) % MOD;
+		if (i > 0) power = (power * BASE) % MOD;
+	}
+
+	hashTable[hash].push_back(0);
+	for (int i = len; i < L; i++) {
+		hash = (hash + MOD - (((S[i - len] - 'a' + 1) * power) % MOD));
+		hash = (hash * BASE) % MOD;
+		hash = (hash + (S[i] - 'a' + 1)) % MOD;
+
+		if (hashTable.find(hash) != hashTable.end()) {
+			for (int startIdx : hashTable[hash]) {
+				if (S.substr(startIdx, len) == S.substr(i - len + 1, len)) {
+					return true;
+				}
+			}
+		}
+		hashTable[hash].push_back(i - len + 1);
+	}
+	return false;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> L >> S;
+	int left = 1, right = L, result = 0;
+	while (left <= right) {
+		int mid = (left + right) / 2;
+		if (hasDuplicate(mid)) {
+			result = mid;
+			left = mid + 1;
+		}
+		else {
+			right = mid - 1;
+		}
+	}
+	cout << result;
+}
