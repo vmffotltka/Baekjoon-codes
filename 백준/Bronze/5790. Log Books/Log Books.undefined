@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	while (true) {
+		bool ans = true;
+		int sum = 0, night = 0;
+		int n; cin >> n;
+		if (!n) break;
+		while (n--) {
+			vector<int> time(4);
+			for (int i = 0; i < 4; i++) {
+				string s; cin >> s;
+				time[i] = (s[0] - '0') * 600 + (s[1] - '0') * 60 + (s[3] - '0') * 10 + (s[4] - '0');
+			}
+			if (time[3] - time[2] > 120)
+				ans = false;
+			if ((time[3] - time[1]) >= (time[1] - time[2]) * 2 || (time[0] - time[2]) >= (time[3] - time[0]) * 2)
+				night += time[3] - time[2];
+			sum += time[3] - time[2];
+		}
+		cout << (ans && sum >= 3000 && night >= 600 ? "PASS\n" : "NON\n");
+	}
+}
