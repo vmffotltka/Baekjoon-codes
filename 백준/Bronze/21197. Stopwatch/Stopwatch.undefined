@@ -1,0 +1,14 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, sum = 0, pre; cin >> n;
+	for (int i = 0; i < n; i++) {
+		int cur; cin >> cur;
+		if (i & 1) sum += cur - pre;
+		else pre = cur;
+	}
+	if (n & 1) cout << "still running";
+	else cout << sum;
+}
