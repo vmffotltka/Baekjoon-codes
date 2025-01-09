@@ -1,0 +1,9 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n; cin >> n;
+	if (n & 1) cout << "Either";
+	else cout << (n % 4 == 2 ? "Odd" : "Even");
+}
