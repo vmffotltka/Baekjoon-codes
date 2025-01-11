@@ -1,0 +1,15 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, p, s; cin >> n >> p >> s;
+	while (s--) {
+		int len; cin >> len;
+		bool tri = true;
+		for (int i = 0; i < len; i++) {
+			int chosen; cin >> chosen;
+			if (chosen == p) tri = false;
+		}
+		cout << (tri ? "REMOVE\n" : "KEEP\n");
+	}
+}
