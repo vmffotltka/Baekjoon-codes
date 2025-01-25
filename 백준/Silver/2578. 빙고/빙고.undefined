@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int arr[5][5], Y[25], X[25];
+
+int bingoCount() {
+	int cnt = 0;
+	for (int i = 0; i < 5; i++) {
+		bool bingo = true;
+		for (int j = 0; j < 5; j++) {
+			if (arr[i][j]) bingo = false;
+		}
+		if (bingo) cnt++;
+		bingo = true;
+		for (int j = 0; j < 5; j++) {
+			if (arr[j][i]) bingo = false;
+		}
+		if (bingo) cnt++;
+	}
+	bool bingo = true;
+	for (int i = 0; i < 5; i++) {
+		if (arr[i][i]) bingo = false;
+	}
+	if (bingo) cnt++;
+	bingo = true;
+	for (int i = 0; i < 5; i++) {
+		if (arr[i][4 - i]) bingo = false;
+	}
+	if (bingo) cnt++;
+	return cnt;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			cin >> arr[i][j];
+			arr[i][j]--;
+			Y[arr[i][j]] = i, X[arr[i][j]] = j;
+		}
+	}
+	int cnt = 0;
+	for (int i = 1; i <= 25; i++) {
+		int p; cin >> p;
+		p--;
+		arr[Y[p]][X[p]] = 0;
+		int cnt = bingoCount();
+		if (cnt >= 3) { cout << i; return 0; }
+	}
+}
