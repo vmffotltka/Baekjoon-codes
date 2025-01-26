@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int arr[10], cur[10], N;
+
+bool dfs(int depth) {
+	if (depth > N) {
+		vector<int> v(N);
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < i; j++) {
+				if (cur[j] > cur[i]) v[cur[i] - 1]++;
+			}
+		}
+		bool ans = true;
+		for (int i = 0; i < N; i++) {
+			if (arr[i] != v[i]) ans = false;
+		}
+		if (ans) {
+			for (int i = 0; i < N; i++)
+				cout << cur[i] << " ";
+		}
+		return ans;
+	}
+	for (int i = 0; i < N; i++) {
+		if (cur[i]) continue;
+		cur[i] = depth;
+		if (dfs(depth + 1)) return true;
+		cur[i] = 0;
+	}
+	return false;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N;
+	for (int i = 0; i < N; i++) cin >> arr[i];
+	dfs(1);
+}
