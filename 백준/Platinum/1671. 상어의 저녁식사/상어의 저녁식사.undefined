@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Shark {
+	int size, speed, intelligence;
+};
+
+int N, matched[50], visited[50];
+vector<Shark> sharks;
+vector<int> adj[50];
+
+bool canEat(const Shark& a, const Shark& b, int i, int j) {
+	if (a.size == b.size && a.speed == b.speed && a.intelligence == b.intelligence) return i < j;
+	else return a.size >= b.size && a.speed >= b.speed && a.intelligence >= b.intelligence;
+}
+
+bool dfs(int x) {
+	for (int next : adj[x]) {
+		if (visited[next]) continue;
+		visited[next] = true;
+		if (matched[next] == -1 || dfs(matched[next])) {
+			matched[next] = x;
+			return true;
+		}
+	}
+	return false;
+}
+
+int bipartiteMatching() {
+	memset(matched, -1, sizeof(matched));
+	int matchCount = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < 2; j++) {
+			memset(visited, false, sizeof(visited));
+			if (dfs(i)) matchCount++;
+		}
+	}
+	return matchCount;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N;
+	sharks.resize(N);
+	for (int i = 0; i < N; i++) {
+		cin >> sharks[i].size >> sharks[i].speed >> sharks[i].intelligence;
+	}
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (i == j) continue;
+			if (canEat(sharks[i], sharks[j], i, j))
+				adj[i].push_back(j);
+		}
+	}
+	cout << N - bipartiteMatching();
+}
