@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, C[100][100], dp[100][100];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		int a, b; cin >> a >> b;
+		a--, b--;
+		C[a][b] = 1, C[b][a] = 1;
+	}
+	for (int i = 0; i < 100; i++) {
+		for (int j = i; j >= 0; j--) {
+			for (int k = j; k < i; k++) {
+				dp[j][i] = max(dp[j][i], dp[j][k] + dp[k][i] + C[i][j]);
+			}
+		}
+	}
+	cout << dp[0][99];
+}
