@@ -1,0 +1,12 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	double ans = 0;
+	int t; cin >> t; while (t--) {
+		double a, b; cin >> a >> b;
+		ans += a * b;
+	}
+	cout << ans;
+}
