@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int a, b, c, h = 0, t = 1; cin >> a >> b >> c;
+	while (true) {
+		h += a;
+		if (h >= c) break;
+		h -= b, t++;
+	}
+	cout << t;
+}
