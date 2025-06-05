@@ -1,12 +1,13 @@
-ll mul_inv(ll a, ll b) {
-    ll b0 = b, t, q;
-    ll x0 = 0, x1 = 1;
-    if (b == 1) return 1;
-    while (a > 1) {
-        q = a / b;
-        t = b, b = a % b, a = t;
-        t = x0, x0 = x1 - q * x0, x1 = t;
+int mul_inv(int r1, int r2) {
+    int s, s1 = 1, s2 = 0;
+    int r, q, r0 = r2;
+    while (true) {
+        q = r1 / r2;
+        r = r1 - q * r2;
+        s = s1 - q * s2;
+        r1 = r2, r2 = r, s1 = s2, s2 = s;
+        if (r == 0) break;
     }
-    if (x1 < 0) x1 += b0;
-    return x1;
+    if (s1 < 0) s1 += r0;
+    return s1;
 }
