@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+string arr[12];
+int dy[4] = { -1, 0, 1, 0 };
+int dx[4] = { 0, 1, 0, -1 };
+
+bool pop(int i, int j, char c) {
+	bool visited[12][6] = { false, };
+	list<pair<int, int>> q, log;
+	visited[i][j] = true;
+	q.push_back({ i, j });
+	log.push_back({ i, j });
+	int cnt = 1;
+	while (!q.empty()) {
+		auto [y, x] = q.front();
+		q.pop_front();
+		for (int k = 0; k < 4; k++) {
+			int ny = y + dy[k];
+			int nx = x + dx[k];
+			if (ny < 0 || ny >= 12 || nx < 0 || nx >= 6) continue;
+			if (visited[ny][nx] || arr[ny][nx] != c) continue;
+			visited[ny][nx] = true;
+			cnt++;
+			q.push_back({ ny, nx });
+			log.push_back({ ny, nx });
+		}
+	}
+	if (cnt >= 4) {
+		for (auto [y, x] : log) {
+			arr[y][x] = '.';
+		}
+		return true;
+	}
+	else return false;
+}
+
+void pushDown() {
+	for (int j = 0; j < 6; j++) {
+		int idx = 11;
+		for (int i = 11; i >= 0; i--) {
+			if (arr[i][j] != '.') {
+				arr[idx--][j] = arr[i][j];
+			}
+		}
+		while (idx >= 0) {
+			arr[idx--][j] = '.';
+		}
+	}
+}
+
+bool popping() {
+	bool popped = false;
+	for (int i = 11; i >= 0; i--) {
+		for (int j = 0; j < 6; j++) {
+			if (arr[i][j] == '.') continue;
+			if (pop(i, j, arr[i][j])) popped = true;
+		}
+	}
+	pushDown();
+	return popped;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	for (int i = 0; i < 12; i++) cin >> arr[i];
+	int ans = 0;
+	while (true) {
+		if (!popping()) break;
+		ans++;
+	}
+	cout << ans;
+}
