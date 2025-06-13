@@ -1,0 +1,43 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, M, ans = 0;
+bool visited[501];
+vector<int> edge[501];
+
+void bfs(int start) {
+	list<int> q, tmp;
+	visited[start] = true;
+	q.push_back(start);
+	int dist = 0;
+	while (!q.empty()) {
+		int cur = q.front();
+		q.pop_front();
+		if (cur != 1) ans++;
+		for (int next : edge[cur]) {
+			if (!visited[next]) {
+				visited[next] = true;
+				tmp.push_back(next);
+			}
+		}
+		if (q.empty()) {
+			q.swap(tmp);
+			if (++dist > 2) {
+				return;
+			}
+		}
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		int u, v;
+		cin >> u >> v;
+		edge[u].push_back(v);
+		edge[v].push_back(u);
+	}
+	bfs(1);
+	cout << ans;
+}
