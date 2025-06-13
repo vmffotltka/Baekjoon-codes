@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	ll n, ans = 1; cin >> n;
+	while (true) {
+		if (ans * ans > n) break;
+		ans++;
+	}
+	cout << ans - 1;
+}
