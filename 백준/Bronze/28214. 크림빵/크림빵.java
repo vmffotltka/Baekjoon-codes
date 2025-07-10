@@ -17,9 +17,9 @@ public class Main {
         	int cnt = 0;
         	for (int j = 0; j < k; j++) {
             	int cur = Integer.parseInt(input[i * k + j]);
-        		if (cur == 1) cnt++;
+        		if (cur == 0) cnt++;
         	}
-        	if (cnt >= p) ans++;
+        	if (cnt < p) ans++;
         }
         bw.write(ans + "");
         bw.flush();
