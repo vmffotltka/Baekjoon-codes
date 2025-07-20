@@ -1,0 +1,12 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int time = 0;
+	for (int i = 0; i < 4; i++) {
+		int p; cin >> p;
+		time += p;
+	}
+	cout << (time + 300 <= 1800 ? "Yes" : "No");
+}
