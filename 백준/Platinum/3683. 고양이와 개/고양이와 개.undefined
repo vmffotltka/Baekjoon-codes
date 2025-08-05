@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int C, D, V;
+vector<vector<int>> adj;
+vector<int> aMatch, bMatch;
+vector<bool> visited;
+
+bool dfs(int a) {
+    if (visited[a]) return false;
+    visited[a] = true;
+
+    for (int b : adj[a]) {
+        if (bMatch[b] == -1 || dfs(bMatch[b])) {
+            aMatch[a] = b;
+            bMatch[b] = a;
+            return true;
+        }
+    }
+    return false;
+}
+
+int get_idx(char type, int num) {
+    if (type == 'C') {
+        return num;
+    }
+    else {
+        return C + num;
+    }
+}
+
+void solve() {
+    cin >> C >> D >> V;
+
+    vector<pair<int, int>> votes(V);
+    vector<int> cat_lovers, dog_lovers;
+
+    for (int i = 0; i < V; ++i) {
+        string s1, s2;
+        cin >> s1 >> s2;
+
+        int u = get_idx(s1[0], stoi(s1.substr(1)));
+        int v = get_idx(s2[0], stoi(s2.substr(1)));
+        votes[i] = { u, v };
+        if (s1[0] == 'C') {
+            cat_lovers.push_back(i);
+        }
+        else {
+            dog_lovers.push_back(i);
+        }
+    }
+
+    adj.assign(V, vector<int>());
+
+    for (int i : cat_lovers) {
+        for (int j : dog_lovers) {
+            if (votes[i].first == votes[j].second || votes[i].second == votes[j].first) {
+                adj[i].push_back(j);
+            }
+        }
+    }
+    aMatch.assign(V, -1);
+    bMatch.assign(V, -1);
+    int match_count = 0;
+
+    for (int i : cat_lovers) {
+        visited.assign(V, false);
+        if (dfs(i)) {
+            match_count++;
+        }
+    }
+    cout << V - match_count << '\n';
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+    int t; cin >> t; while (t--) solve();
+}
