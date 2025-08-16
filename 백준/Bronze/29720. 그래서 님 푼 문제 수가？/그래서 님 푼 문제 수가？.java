@@ -13,7 +13,7 @@ public class Main {
         int m = Integer.parseInt(input[1]);
         int k = Integer.parseInt(input[2]);
         
-        bw.write(Math.max(0, n - m * k) + " " + Math.max(0, (n - m * (k - 1) - 1)));
+        bw.write(String.format("%d %d", Math.max(0, n - m * k), Math.max(0, (n - m * (k - 1) - 1))));
         
         bw.flush();
     }
