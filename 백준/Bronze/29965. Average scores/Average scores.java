@@ -21,8 +21,8 @@ public class Main {
         	}
         }
         
-        double mAv = (mCnt == 0 ? 0 : mScore / Double.valueOf(mCnt));
-        double jAv = (jCnt == 0 ? 0 : jScore / Double.valueOf(jCnt));
+        double mAv = (mCnt == 0 ? 0 : mScore / (double)mCnt);
+        double jAv = (jCnt == 0 ? 0 : jScore / (double)jCnt);
         
         bw.write(mAv > jAv ? "M" : (mAv < jAv ? "J" : "V"));
         bw.flush();
