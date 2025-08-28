@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int MAX = 100'000;
+struct Line {
+	ll a, b;
+	double x = 0;
+};
+
+double intersect(const Line& l1, const Line& l2) {
+	return (double)(l2.b - l1.b) / (l1.a - l2.a);
+}
+
+int A[MAX], B[MAX], N;
+vector<Line> hull;
+ll dp[MAX];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N;
+	for (int i = 0; i < N; i++) cin >> A[i];
+	for (int i = 0; i < N; i++) cin >> B[i];
+
+	for (int i = 1; i < N; i++) {
+		Line newLine = { B[i - 1], dp[i - 1] };
+		while (!hull.empty()) {
+			newLine.x = intersect(hull.back(), newLine);
+			if (newLine.x < hull.back().x) hull.pop_back();
+			else break;
+		}
+		hull.push_back(newLine);
+
+		ll x = A[i];
+		int lo = 0, hi = (int)hull.size() - 1, pos = 0;
+
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (hull[mid].x < x) {
+				lo = mid + 1;
+				pos = mid;
+			}
+			else hi = mid - 1;
+		}
+		dp[i] = hull[pos].a * x + hull[pos].b;
+	}
+
+	cout << dp[N - 1];
+}
