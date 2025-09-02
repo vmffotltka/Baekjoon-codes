@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+const int MAX = 1'000'001;
+
+struct Line {
+	ll m, c;
+	double x = 0;
+	double intersect(const Line& l) {
+		return (double)(l.c - c) / (m - l.m);
+	}
+	ll f(ll x) { return m * x + c; }
+};
+
+ll N, A, B, C, dp[MAX], sum[MAX];
+vector<Line> lines;
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+	cin >> N >> A >> B >> C;
+	for (int i = 1; i <= N; i++) cin >> sum[i];
+	for (int i = 2; i <= N; i++) sum[i] += sum[i - 1];
+
+	lines.push_back({ 0, 0, 0 });
+	for (int i = 1; i <= N; i++) {
+		ll x = sum[i];
+		int lo = 0, hi = (int)lines.size() - 1, pos = 0;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (lines[mid].x <= x) {
+				pos = mid;
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		dp[i] = lines[pos].f(x) + A * sum[i] * sum[i] + B * sum[i] + C;
+
+		Line newLine = { -2 * A * sum[i], dp[i] + A * sum[i] * sum[i] - B * sum[i] };
+		while (!lines.empty()) {
+			double t = newLine.intersect(lines.back());
+			if (t <= lines.back().x) lines.pop_back();
+			else {
+				newLine.x = t;
+				break;
+			}
+		}
+		lines.push_back(newLine);
+	}
+	cout << dp[N];
+}
