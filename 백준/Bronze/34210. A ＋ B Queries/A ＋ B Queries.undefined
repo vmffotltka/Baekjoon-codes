@@ -1,0 +1,12 @@
+#include "aplusb.h"
+
+std::vector<int> a, b;
+
+void initialize(std::vector<int> A, std::vector<int> B) {
+    a = std::move(A);
+    b = std::move(B);
+}
+
+int answer_question(int i, int j) {
+  return a[i] + b[j];
+}
