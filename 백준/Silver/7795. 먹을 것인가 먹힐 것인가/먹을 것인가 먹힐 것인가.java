@@ -43,7 +43,7 @@ public class Main {
         		}
         		ans += pos + 1;
         	}
-        	sb.append(ans + "\n");
+        	sb.append(String.format("%d\n", ans));
         }
         System.out.print(sb.toString().strip());
     }
