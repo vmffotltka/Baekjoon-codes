@@ -73,7 +73,7 @@ int main() {
 			if (node->next.count(c)) { // 매칭된 경우 다음으로
 				node = node->next[c];
 			}
-			if (node->end) { // 패턴이 매칭된 경우
+			if (node->end) { // 패턴이 매칭된 경우 (만약 패턴을 직접 출력하려면 fail노드를 계속 거슬러 올라가면서 end를 체크함. end는 vector형식으로 바꾸면 패턴 출력 가능.)
 				found = true;
 				break;
 			}
