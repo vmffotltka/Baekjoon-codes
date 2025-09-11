@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int patternH, patternW, imageH, imageW, matchedPattern[2000][2000], pi[2000], pattern[2000];
+map<string, int> mp;
+
+struct Trie {
+	map<char, Trie*> next;
+	pair<bool, int> output = { false, -1 };
+	Trie* fail = nullptr;
+
+	~Trie() {
+		for (auto& [_, p] : next) delete p;
+	}
+
+	void insert(const string& s) {
+		Trie* curr = this;
+		for (char ch : s) {
+			if (!curr->next[ch]) curr->next[ch] = new Trie();
+			curr = curr->next[ch];
+		}
+		curr->output = { true, mp[s] };
+	}
+};
+
+void buildPi() {
+	int j = 0;
+	for (int i = 1; i < patternH; i++) {
+		while (j > 0 && pattern[0] != pattern[i]) j = pi[j - 1];
+		if (pattern[0] == pattern[i]) pi[i] = ++j;
+	}
+}
+
+int kmp(int row) {
+	int j = 0, ret = 0;
+	for (int i = 0; i < imageH; i++) {
+		while (j > 0 && pattern[j] != matchedPattern[i][row]) j = pi[j - 1];
+		if (pattern[j] == matchedPattern[i][row]) {
+			if (j == patternH - 1) {
+				ret++;
+				j = pi[j];
+			}
+			else j++;
+		}
+	}
+	return ret;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> patternH >> patternW >> imageH >> imageW;
+
+	int p = 1;
+	Trie* root = new Trie();
+	for (int i = 0; i < patternH; i++) {
+		string s; cin >> s;
+		if (!mp[s]) mp[s] = p++;
+		pattern[i] = mp[s];
+
+		root->insert(s);
+	}
+	buildPi();
+
+	queue<Trie*> q;
+	for (auto& [_, next] : root->next) {
+		next->fail = root;
+		q.push(next);
+	}
+	while (!q.empty()) {
+		Trie* curr = q.front(); q.pop();
+		for (auto& [ch, next] : curr->next) {
+			Trie* f = curr->fail;
+			while (f && !f->next[ch]) f = f->fail;
+			if (f) next->fail = f->next[ch];
+			else next->fail = root;
+
+			if (next->fail->output.first) next->output = next->fail->output;
+
+			q.push(next);
+		}
+	}
+
+	for (int i = 0; i < imageH; i++) {
+		string s; cin >> s;
+		Trie* curr = root;
+		for (int j = 0; j < imageW; j++) {
+			while (curr && !curr->next[s[j]]) curr = curr->fail;
+			if (curr) curr = curr->next[s[j]];
+			else curr = root;
+			if (curr->output.first) {
+				int patternIdx = curr->output.second;
+				matchedPattern[i][j] = patternIdx;
+			}
+		}
+	}
+
+	int ans = 0;
+	for (int i = 0; i < imageW; i++)
+		ans += kmp(i);
+
+	cout << ans;
+}
