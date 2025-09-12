@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool visited[1001];
+int N, M, matched[1001];
+vector<int> edge[1001];
+
+bool dfs(int u) {
+	for (int v : edge[u]) {
+		if (visited[v]) continue;
+		visited[v] = true;
+
+		if (matched[v] == -1 || dfs(matched[v])) {
+			matched[v] = u;
+			return true;
+		}
+	}
+	return false;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N >> M;
+	for (int i = 1; i <= N; i++) {
+		int n; cin >> n;
+		for (int j = 0; j < n; j++) {
+			int p; cin >> p;
+			edge[i].push_back(p);
+		}
+	}
+	memset(matched, -1, sizeof(matched));
+	int matchCount = 0;
+	
+	for (int i = 1; i <= N; i++) {
+		memset(visited, false, sizeof(visited));
+		if (dfs(i)) matchCount++;
+	}
+	cout << matchCount;
+}
