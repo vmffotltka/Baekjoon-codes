@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+const int MAX = 2005;
+
+int N, M, K;
+int capacity[MAX][MAX];
+int flow[MAX][MAX];
+vector<int> adj[MAX];
+
+const int S = 0;
+const int T = MAX - 2;
+const int K_NODE = 1;
+
+void add_edge(int u, int v, int cap) {
+	adj[u].push_back(v);
+	adj[v].push_back(u);
+	capacity[u][v] = cap;
+}
+
+int max_flow() {
+	int total_flow = 0;
+	while (true) {
+		vector<int> parent(MAX, -1);
+		queue<int> q;
+
+		q.push(S);
+		parent[S] = S;
+		while (!q.empty() && parent[T] == -1) {
+			int u = q.front();
+			q.pop();
+			for (int v : adj[u]) {
+				if (parent[v] == -1 && capacity[u][v] - flow[u][v] > 0) {
+					parent[v] = u;
+					q.push(v);
+					if (v == T) break;
+				}
+			}
+		}
+		if (parent[T] == -1) break;
+
+		int increment = INF;
+		for (int u = T; u != S; u = parent[u]) {
+			int v = parent[u];
+			increment = min(increment, capacity[v][u] - flow[v][u]);
+		}
+
+		for (int u = T; u != S; u = parent[u]) {
+			int v = parent[u];
+			flow[v][u] += increment;
+			flow[u][v] -= increment;
+		}
+
+		total_flow += increment;
+	}
+	return total_flow;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N >> M >> K;
+
+	add_edge(S, K_NODE, K);
+	for (int i = 1; i <= N; i++) {
+		add_edge(K_NODE, i + 1, 1);
+		add_edge(S, i + 1, 1);
+	}
+	for (int i = 1; i <= N; i++) {
+		int n; cin >> n;
+		while (n--) {
+			int j; cin >> j;
+			add_edge(i + 1, N + 1 + j, 1);
+		}
+	}
+	for (int i = 1; i <= M; i++) {
+		add_edge(N + 1 + i, T, 1);
+	}
+
+	cout << max_flow();
+}
