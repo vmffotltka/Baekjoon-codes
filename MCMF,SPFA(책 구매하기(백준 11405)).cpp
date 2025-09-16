@@ -63,16 +63,16 @@ int mcmf() {
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin >> N >> M;
-	adj.resize(N + M + 2);
+	adj.resize(N + M + 2); // 소스 = 0, 싱크 = N + M + 1
 	source = 0;
 	sink = N + M + 1;
 
-	for (int i = 1; i <= N; i++) {
+	for (int i = 1; i <= N; i++) { // 사람 -> 싱크
 		int demand; cin >> demand;
 		addEdge(M + i, sink, demand, 0);
 	}
 
-	for (int i = 1; i <= M; i++) {
+	for (int i = 1; i <= M; i++) { // 소스 -> 서점
 		int supply; cin >> supply;
 		addEdge(source, i, supply, 0);
 	}
@@ -80,7 +80,7 @@ int main() {
 	for (int i = 1; i <= M; i++) {
 		for (int j = 1; j <= N; j++) {
 			int cost; cin >> cost;
-			addEdge(i, M + j, INF, cost);
+			addEdge(i, M + j, INF, cost); // 사람 -> 서점
 		}
 	}
 	cout << mcmf();
