@@ -1,4 +1,4 @@
-# [Silver I] 창고 다각형 - 2304 
+# [Silver II] 창고 다각형 - 2304 
 
 [문제 링크](https://www.acmicpc.net/problem/2304) 
 
