@@ -1,0 +1,9 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int x, y, z, u, w, v;
+	cin >> x >> y >> z >> u >> w >> v;
+	cout << u / 100 * x + w / 50 * y + v / 20 * z;
+}
