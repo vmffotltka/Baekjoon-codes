@@ -5,9 +5,9 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        
         int n = Integer.parseInt(br.readLine());
-        StringBuilder sb = new StringBuilder();
         while (n-- > 0) {
         	int d, m, y;
         	String s = br.readLine();
@@ -24,8 +24,8 @@ public class Main {
         	}
         	y = Integer.parseInt(input[2]);
         	
-        	sb.append(String.format("%02d.%02d.%04d %02d/%02d/%04d\n", d, m, y, m, d, y));
+        	bw.write(String.format("%02d.%02d.%04d %02d/%02d/%04d\n", d, m, y, m, d, y));
         }
-        System.out.print(sb.toString());
+        bw.flush();
     }
 }
