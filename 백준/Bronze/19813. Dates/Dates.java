@@ -7,23 +7,25 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int n = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
         while (n-- > 0) {
         	int d, m, y;
         	String s = br.readLine();
-        	StringTokenizer st;
-        	if (s.contains(".")) {
-            	st = new StringTokenizer(s, ".");
-            	d = Integer.parseInt(st.nextToken());
-            	m = Integer.parseInt(st.nextToken());
+        	String[] input = new String[3];
+        	if (!s.contains(".")) {
+            	input = s.split("/");
+            	d = Integer.parseInt(input[1]);
+            	m = Integer.parseInt(input[0]);
         	}
         	else {
-            	st = new StringTokenizer(s, "/");
-            	m = Integer.parseInt(st.nextToken());
-            	d = Integer.parseInt(st.nextToken());
+        		input = s.split("\\.");
+        		d = Integer.parseInt(input[0]);
+        		m = Integer.parseInt(input[1]);
         	}
-        	y = Integer.parseInt(st.nextToken());
+        	y = Integer.parseInt(input[2]);
         	
-        	System.out.print(String.format("%02d.%02d.%04d %02d/%02d/%04d\n", d, m, y, m, d, y));
+        	sb.append(String.format("%02d.%02d.%04d %02d/%02d/%04d\n", d, m, y, m, d, y));
         }
+        System.out.print(sb.toString());
     }
 }
