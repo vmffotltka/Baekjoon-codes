@@ -12,6 +12,6 @@ public class Main {
         else if (n < 1000000) p = n * 3 / 20;
         else p = n / 5;
         
-        System.out.print(p + " " + (n - p));
+        System.out.printf("%d %d", p, n - p);
     }
 }
