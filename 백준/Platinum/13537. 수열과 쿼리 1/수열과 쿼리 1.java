@@ -4,36 +4,44 @@ import java.util.*;
 public class Main {
 
     static int N, M;
-    static List<List<Integer>> tree;
+    static int[][] tree;
 
-    static int count(List<Integer> li, int k) {
-        int s = 0, e = li.size() - 1, pos = li.size();
+    static int count(int[] arr, int k) {
+        int s = 0, e = arr.length - 1;
+        int pos = arr.length;
+
         while (s <= e) {
             int mid = (s + e) / 2;
-            if (li.get(mid) > k) {
+            if (arr[mid] > k) {
                 pos = mid;
                 e = mid - 1;
+            } else {
+                s = mid + 1;
             }
-            else s = mid + 1;
         }
-        return li.size() - pos;
+        return arr.length - pos;
     }
 
     static void init() {
         for (int i = N - 1; i > 0; i--) {
-            List<Integer> leftChild = tree.get(i * 2);
-            List<Integer> rightChild = tree.get(i * 2 + 1);
+            int[] leftChild = tree[i * 2];
+            int[] rightChild = tree[i * 2 + 1];
 
-            int idx = 0;
-            for (int item : leftChild) {
-                while (idx < rightChild.size() && item > rightChild.get(idx)) {
-                    tree.get(i).add(rightChild.get(idx));
-                    idx++;
+            tree[i] = new int[leftChild.length + rightChild.length];
+            int l = 0, r = 0, idx = 0;
+
+            while (l < leftChild.length && r < rightChild.length) {
+                if (leftChild[l] < rightChild[r]) {
+                    tree[i][idx++] = leftChild[l++];
+                } else {
+                    tree[i][idx++] = rightChild[r++];
                 }
-                tree.get(i).add(item);
             }
-            for (int j = idx; j < rightChild.size(); j++) {
-                tree.get(i).add(rightChild.get(j));
+            while (l < leftChild.length) {
+                tree[i][idx++] = leftChild[l++];
+            }
+            while (r < rightChild.length) {
+                tree[i][idx++] = rightChild[r++];
             }
         }
     }
@@ -42,11 +50,11 @@ public class Main {
         int ans = 0;
         for (l += N - 1, r += N - 1; l <= r; l >>= 1, r >>= 1) {
             if (l % 2 == 1) {
-                ans += count(tree.get(l), k);
+                ans += count(tree[l], k);
                 l++;
             }
             if (r % 2 == 0) {
-                ans += count(tree.get(r), k);
+                ans += count(tree[r], k);
                 r--;
             }
         }
@@ -57,16 +65,12 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(br.readLine());
-        tree = new ArrayList<>();
-        for (int i = 0; i < N * 2; i++) {
-            tree.add(new ArrayList<>());
-        }
+        tree = new int[2 * N][];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            tree.get(N + i).add(Integer.parseInt(st.nextToken()));
+            tree[N + i] = new int[]{ Integer.parseInt(st.nextToken()) };
         }
         init();
-
         M = Integer.parseInt(br.readLine());
         StringBuilder sb = new StringBuilder();
         while (M-- > 0) {
