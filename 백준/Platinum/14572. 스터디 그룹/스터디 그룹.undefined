@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Student {
+	int value;
+	vector<int> algo;
+	bool operator<(const Student& other) const {
+		return value < other.value;
+	}
+} students[100000];
+
+map<int, int> algo_count;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int N, K, D; cin >> N >> K >> D;
+	for (int i = 0; i < N; i++) {
+		int M, d; cin >> M >> d;
+		students[i].value = d;
+		for (int j = 0; j < M; j++) {
+			int a; cin >> a;
+			students[i].algo.push_back(a);
+		}
+	}
+	sort(students, students + N);
+	int ans = 0;
+	int s = 0, e = 0;
+	while (e < N && students[e].value - students[s].value <= D) {
+		for (auto i : students[e].algo)
+			algo_count[i]++;
+
+		int distinctAlgo = 0, allKnownAlgo = 0;
+		for (auto &[key, val] : algo_count) {
+			if (val > 0) distinctAlgo++;
+			if (val == e - s + 1) allKnownAlgo++;
+		}
+		e++;
+		ans = max(ans, (distinctAlgo - allKnownAlgo) * (e - s));
+
+		while (s < e && students[e].value - students[s].value > D) {
+			for (auto i : students[s].algo)
+				algo_count[i]--;
+			s++;
+		}
+	}
+	cout << ans;
+}
