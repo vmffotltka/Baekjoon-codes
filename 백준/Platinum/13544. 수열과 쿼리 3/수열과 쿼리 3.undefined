@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, M;
+vector<int> tree[200'000];
+
+int count(vector<int> &arr, int k) {
+	return arr.end() - upper_bound(arr.begin(), arr.end(), k);
+}
+
+void init() {
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		int x; cin >> x;
+		tree[N + i].push_back(x);
+	}
+	for (int i = N - 1; i > 0; i--) {
+		merge(tree[i << 1].begin(), tree[i << 1].end(),
+			  tree[i << 1 | 1].begin(), tree[i << 1 | 1].end(),
+			  back_inserter(tree[i]));
+	}
+}
+
+int query(int l, int r, int k) {
+	int res = 0;
+	for (l += N, r += N; l < r; l >>= 1, r >>= 1) {
+		if (l & 1) res += count(tree[l++], k);
+		if (r & 1) res += count(tree[--r], k);
+	}
+	return res;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	init();
+	cin >> M;
+	int i, j, k, last_ans = 0;
+	while (M--) {
+		int a, b, c; cin >> a >> b >> c;
+		i = (a ^ last_ans) - 1, j = (b ^ last_ans), k = c ^ last_ans;
+		last_ans = query(i, j, k);
+		cout << last_ans << '\n';
+	}
+}
