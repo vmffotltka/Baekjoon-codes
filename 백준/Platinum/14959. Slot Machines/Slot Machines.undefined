@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> getPi(const vector<int> & s) {
+	int n = (int)s.size();
+	vector<int> pi(n);
+	for (int i = 1; i < n; i++) {
+		int j = pi[i - 1];
+		while (j > 0 && s[i] != s[j]) {
+			j = pi[j - 1];
+		}
+		if (s[i] == s[j]) {
+			j++;
+		}
+		pi[i] = j;
+	}
+	return pi;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n; cin >> n;
+	vector<int> arr(n);
+	for (int i = n - 1; i >= 0; i--)
+		cin >> arr[i];
+
+	vector<int> pi = getPi(arr);
+	int ansK = 0, ansP = 0, mn = INT_MAX;
+	for (int i = 0; i < n; i++) {
+		int len = i + 1, p = len - pi[i], k = n - len;
+		if (k + p < mn) {
+			mn = k + p;
+			ansK = k, ansP = p;
+		}
+		else if (k + p == mn && p < ansP)
+			ansK = k, ansP = p;
+	}
+	cout << ansK << ' ' << ansP;
+}
