@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX = 100005;
+
+vector<int> adj[MAX];
+int N, M;
+int in[MAX], out[MAX], tree[MAX];
+int timer = 0;
+
+void dfs(int u) {
+	in[u] = ++timer;
+	for (int v : adj[u]) {
+		dfs(v);
+	}
+	out[u] = timer;
+}
+
+void update(int idx, int val) {
+	while (idx <= N) {
+		tree[idx] += val;
+		idx += (idx & -idx);
+	}
+}
+
+int query(int idx) {
+	int ret = 0;
+	while (idx > 0) {
+		ret += tree[idx];
+		idx -= (idx & -idx);
+	}
+	return ret;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> N >> M;
+	for (int i = 1; i <= N; i++) {
+		int parent; cin >> parent;
+		if (parent == -1) continue;
+		adj[parent].push_back(i);
+	}
+	dfs(1);
+	while (M--) {
+		int cmd; cin >> cmd;
+		if (cmd == 1) {
+			int i, w; cin >> i >> w;
+			update(in[i], w);
+			update(out[i] + 1, -w);
+		}
+		else {
+			int i; cin >> i;
+			cout << query(in[i]) << '\n';
+		}
+	}
+}
