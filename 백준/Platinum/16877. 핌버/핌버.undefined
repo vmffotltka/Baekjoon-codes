@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX = 3'000'001;
+int G[MAX], nextG[50];
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	for (int i = 1; i < MAX; i++) {
+		memset(nextG, 0, sizeof(nextG));
+		int fibo1 = 0, fibo2 = 1, idx = 0;
+		while (true) {
+			int fibo = fibo1 + fibo2;
+			if (fibo > i) break;
+			nextG[G[i - fibo]]++;
+			fibo1 = fibo2;
+			fibo2 = fibo;
+		}
+		int g = 0;
+		while (nextG[g]) g++;
+		G[i] = g;
+	}
+	int n, ans = 0; cin >> n;
+	for (int i = 0; i < n; i++) {
+		int p; cin >> p;
+		ans ^= G[p];
+	}
+	cout << (ans == 0 ? "cubelover" : "koosaga");
+}
