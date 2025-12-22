@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_NODES = 200'000 * 30 + 5;
+int trie[MAX_NODES][2], cnt[MAX_NODES];
+int root = 1, unused = 2;
+
+void insert(int x) {
+	int cur = root;
+	cnt[cur]++;
+	for (int i = 29; i >= 0; i--) {
+		int b = (x >> i) & 1;
+		if (!trie[cur][b]) {
+			trie[cur][b] = unused++;
+		}
+		cur = trie[cur][b];
+		cnt[cur]++;
+	}
+}
+
+void remove(int x) {
+	int cur = root;
+	cnt[cur]--;
+	for (int i = 29; i >= 0; i--) {
+		int b = (x >> i) & 1;
+		cur = trie[cur][b];
+		cnt[cur]--;
+	}
+}
+
+int query(int x) {
+	int cur = root;
+	int ans = 0;
+	for (int i = 29; i >= 0; i--) {
+		int b = (x >> i) & 1;
+		if (trie[cur][b ^ 1] && cnt[trie[cur][b ^ 1]] > 0) {
+			ans |= (1 << i);
+			cur = trie[cur][b ^ 1];
+		} else {
+			cur = trie[cur][b];
+		}
+	}
+	return ans;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	insert(0);
+
+	int Q; cin >> Q; while (Q--) {
+		int type, x; cin >> type >> x;
+		if (type == 1)
+			insert(x);
+		else if (type == 2)
+			remove(x);
+		else
+			cout << query(x) << '\n';
+	}
+}
