@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * Fenwick Tree (Binary Indexed Tree)
+ * Time Complexity: O(log N)
+ * Space Complexity: O(N)
+ * 1-based indexing
+ */
+template <typename T = long long>
+struct FenwickTree {
+    int n;
+    vector<T> tree;
+
+    FenwickTree(int size) : n(size), tree(size + 1, 0) {}
+
+    void update(int idx, T diff) {
+        while (idx <= n) {
+            tree[idx] += diff;
+            idx += (idx & -idx);
+        }
+    }
+
+    T query(int idx) {
+        T sum = 0;
+        while (idx > 0) {
+            sum += tree[idx];
+            idx -= (idx & -idx);
+        }
+        return sum;
+    }
+
+    T query(int start, int end) {
+        if (start > end) return 0;
+        return query(end) - query(start - 1);
+    }
+};
+
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    
+    int n; cin >> n;
+    FenwickTree<long long> fenwick(n);
+
+    long long prev = 0;
+    for (int i = 1; i <= n; i++) {
+        long long val; cin >> val;
+        fenwick.update(i, val - prev);
+        prev = val;
+    }
+    int q; cin >> q;
+    while (q--) {
+        int type; cin >> type;
+        if (type == 1) {
+            int i, j, k; cin >> i >> j >> k;
+            fenwick.update(i, k);
+            fenwick.update(j + 1, -k);
+        }
+        else if (type == 2) {
+            int x; cin >> x;
+            cout << fenwick.query(x) << '\n';
+        }
+    }
+}
