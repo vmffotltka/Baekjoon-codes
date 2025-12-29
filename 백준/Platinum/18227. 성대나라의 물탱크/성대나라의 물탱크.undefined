@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, M, C;
+vector<int> adj[200001];
+int tree[200001], depth[200001], in[200001], out[200001], timer = 0;
+
+void makeTree(int node, int par, int d) {
+	in[node] = ++timer;
+	depth[node] = d;
+    for (int neighbor : adj[node]) {
+		if (neighbor == par) continue;
+        makeTree(neighbor, node, d + 1);
+	}
+	out[node] = timer;
+}
+
+void update(int idx, int val) {
+    while (idx <= N) {
+        tree[idx] += val;
+		idx += idx & -idx;
+    }
+}
+
+long long query(int idx) {
+    long long sum = 0;
+    while (idx > 0) {
+        sum += tree[idx];
+        idx -= idx & -idx;
+    }
+    return sum;
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> N >> C;
+    for (int i = 0; i < N - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+	}
+    makeTree(C, -1, 1);
+    
+	cin >> M;
+    while (M--) {
+        int type, x;
+        cin >> type >> x;
+        if (type == 1) {
+			update(in[x], 1);
+        }
+        else {
+            cout << (query(out[x]) - query(in[x] - 1)) * depth[x] << "\n";
+		}
+    }
+}
