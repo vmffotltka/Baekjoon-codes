@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long INF = 1e18;
+int N;
+pair<int, int> col_info[262144];
+long long dp[19][19];
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> N;
+    int sero = 0, garo = N / 2, gap = N + 1;
+    for (int i = 0; i < N; i++) {
+        int val; cin >> val;
+        col_info[garo] = { sero, (int)val };
+        garo += gap;
+        if (garo >= N) {
+            sero++;
+            gap >>= 1;
+            garo = (gap >> 1) - 1;
+        }
+    }
+
+    int limit = (int)(log2(N) + 1);
+    long long ans = -INF;
+    for (int i = 0; i < limit; i++) {
+        for (int j = 0; j < limit; j++) {
+            dp[i][j] = -INF;
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        int depth = col_info[i].first, val = col_info[i].second;
+        for (int a = 0; a < limit; a++) {
+            for (int b = a; b < limit; b++) {
+                if (depth >= a && depth <= b) {
+                    if (dp[a][b] == -INF) dp[a][b] = val;
+                    else dp[a][b] = max(dp[a][b] + val, (long long)val);
+                }
+                if (dp[a][b] != INF)
+                    ans = max(ans, dp[a][b]);
+            }
+        }
+    }
+    cout << ans;
+}
