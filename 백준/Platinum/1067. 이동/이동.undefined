@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#include <complex>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+const double PI = acos(-1);
+typedef complex<double> cpx;
+
+// FFT (Fast Fourier Transform)
+void fft(vector<cpx>& a, bool invert) {
+    int n = a.size();
+    for (int i = 1, j = 0; i < n; i++) {
+        int bit = n >> 1;
+        while (!((j ^= bit) & bit)) bit >>= 1;
+        if (i < j) swap(a[i], a[j]);
+    }
+    for (int len = 2; len <= n; len <<= 1) {
+        double ang = 2 * PI / len * (invert ? -1 : 1);
+        cpx wlen(cos(ang), sin(ang));
+        for (int i = 0; i < n; i += len) {
+            cpx w(1);
+            for (int j = 0; j < len / 2; j++) {
+                cpx u = a[i + j], v = a[i + j + len / 2] * w;
+                a[i + j] = u + v;
+                a[i + j + len / 2] = u - v;
+                w *= wlen;
+            }
+        }
+    }
+    if (invert) {
+        for (int i = 0; i < n; i++) a[i] /= n;
+    }
+}
+
+// Polynomial Multiply using FFT
+void multiply(const vector<int>& a, const vector<int>& b, vector<long long>& res) {
+    vector<cpx> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    int n = 1;
+    while (n < a.size() + b.size()) n <<= 1;
+    fa.resize(n); fb.resize(n);
+    fft(fa, false); fft(fb, false);
+    for (int i = 0; i < n; i++) fa[i] *= fb[i];
+    fft(fa, true);
+    res.resize(n);
+    for (int i = 0; i < n; i++) res[i] = (long long)round(fa[i].real());
+}
+
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int n; cin >> n;
+    vector<int> x(n), y(n);
+    for (int i = 0; i < n; i++) cin >> x[i];
+    for (int i = 0; i < n; i++) cin >> y[i];
+    reverse(x.begin(), x.end());
+
+    vector<int> y_double = y;
+    y_double.insert(y_double.end(), y.begin(), y.end());
+
+    vector<long long> res;
+    multiply(x, y_double, res);
+
+    long long ans = 0;
+    for (int i = n - 1; i < 2 * n - 1; i++) {
+        ans = max(ans, res[i]);
+    }
+    cout << ans;
+}
