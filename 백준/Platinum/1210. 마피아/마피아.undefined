@@ -1,0 +1,95 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+const int MAX_V = 405;
+
+struct Edge {
+    long long to, cap, flow, rev;
+};
+
+vector<Edge> adj[MAX_V];
+int level[MAX_V];
+int work[MAX_V];
+
+void add_edge(long long u, long long v, long long cap) {
+    adj[u].push_back({v, cap, 0, (int)adj[v].size()});
+    adj[v].push_back({u, 0, 0, (int)adj[u].size() - 1});
+}
+
+bool bfs(int s, int t) {
+    fill(level, level + MAX_V, -1);
+    level[s] = 0;
+    queue<int> q;
+    q.push(s);
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (const Edge &e : adj[u]) {
+            if (level[e.to] == -1 && e.flow < e.cap) {
+                level[e.to] = level[u] + 1;
+                q.push(e.to);
+            }
+        }
+    }
+    return level[t] != -1;
+}
+
+long long dfs(int cur, int t, long long flow) {
+    if (cur == t) return flow;
+    for (int &i = work[cur]; i < (int)adj[cur].size(); i++) {
+        Edge &e = adj[cur][i];
+        if (level[e.to] == level[cur] + 1 && e.flow < e.cap) {
+            long long curr_flow = min(flow, e.cap - e.flow);
+            long long temp_flow = dfs(e.to, t, curr_flow);
+            if (temp_flow > 0) {
+                e.flow += temp_flow;
+                adj[e.to][e.rev].flow -= temp_flow;
+                return temp_flow;
+            }
+        }
+    }
+    return 0;
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int n, m; cin >> n >> m;
+    int S, T; cin >> S >> T;
+    for (int i = 1; i <= n; i++) {
+        int cost; cin >> cost;
+        add_edge(i, i + n, cost);
+    }
+    for (int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        add_edge(u + n, v, INF);
+        add_edge(v + n, u, INF);
+    }
+    long long total_flow = 0;
+    while (bfs(S, T + n)) {
+        fill(work, work + MAX_V, 0);
+        while (long long flow = dfs(S, T + n, INF)) {
+            total_flow += flow;
+        }
+    }
+    vector<bool> visited(MAX_V, false);
+    queue<int> q;
+    q.push(S);
+    visited[S] = true;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (const Edge &e : adj[u]) {
+            if (!visited[e.to] && e.flow < e.cap) {
+                visited[e.to] = true;
+                q.push(e.to);
+            }
+        }
+    }
+    vector<int> result;
+    for (int i = 1; i <= n; i++) {
+        if (visited[i] && !visited[i + n]) {
+            result.push_back(i);
+        }
+    }
+    for (int node : result)
+        cout << node << ' ';
+}
