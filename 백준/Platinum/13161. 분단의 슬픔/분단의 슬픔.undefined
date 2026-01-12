@@ -1,0 +1,139 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long INF = 1e18;
+const int MAX_V = 505;
+
+struct Edge {
+    int to;
+    long long cap, flow;
+    int rev;
+};
+
+vector<Edge> adj[MAX_V];
+int level[MAX_V];
+int work[MAX_V];
+
+void add_edge(int u, int v, long long cap) {
+    adj[u].push_back({ v, cap, 0, (int)adj[v].size() });
+    adj[v].push_back({ u, 0, 0, (int)adj[u].size() - 1 });
+}
+
+bool bfs(int s, int t) {
+    fill(level, level + MAX_V, -1);
+    level[s] = 0;
+    queue<int> q;
+    q.push(s);
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (auto& e : adj[u]) {
+            if (e.cap - e.flow > 0 && level[e.to] == -1) {
+                level[e.to] = level[u] + 1;
+                q.push(e.to);
+            }
+        }
+    }
+    return level[t] != -1;
+}
+
+long long dfs(int cur, int t, long long flow) {
+    if (cur == t) return flow;
+    for (int& i = work[cur]; i < adj[cur].size(); i++) {
+        Edge& e = adj[cur][i];
+        if (e.cap - e.flow > 0 && level[e.to] == level[cur] + 1) {
+            long long pushed = dfs(e.to, t, min(flow, e.cap - e.flow));
+            if (pushed > 0) {
+                e.flow += pushed;
+                adj[e.to][e.rev].flow -= pushed;
+                return pushed;
+            }
+        }
+    }
+    return 0;
+}
+
+long long dinic(int s, int t) {
+    long long total_flow = 0;
+    while (bfs(s, t)) {
+        fill(work, work + MAX_V, 0);
+        while (long long flow = dfs(s, t, INF)) {
+            total_flow += flow;
+        }
+    }
+    return total_flow;
+}
+
+int ans[MAX_V];
+
+void get_min_cut_nodes(int s) {
+    vector<int> visited(MAX_V, 0);
+    queue<int> q;
+    q.push(s);
+    visited[s] = 1;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (auto& e : adj[u]) {
+            if (e.cap - e.flow > 0 && !visited[e.to]) {
+                visited[e.to] = 1;
+                ans[e.to] = 1;
+                q.push(e.to);
+            }
+        }
+    }
+}
+
+int w[MAX_V][MAX_V];
+int group[MAX_V];
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int n; cin >> n;
+    vector<int> a, b, c;
+    for (int i = 0; i < n; i++) {
+        cin >> group[i];
+        if (group[i] == 1) a.push_back(i);
+        else if (group[i] == 2) b.push_back(i);
+        else c.push_back(i);
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> w[i][j];
+        }
+    }
+    int S = n, T = n + 1;
+    for (int i = 0; i < c.size(); i++) {
+        for (int j = 0; j < i; j++) {
+            add_edge(c[j], c[i], w[c[j]][c[i]]);
+			add_edge(c[i], c[j], w[c[i]][c[j]]);
+        }
+
+        int fromS = 0, toT = 0;
+        for (int j = 0; j < n; j++) {
+            if (group[j] == 1) fromS += w[j][c[i]];
+            else if (group[j] == 2) toT += w[c[i]][j];
+        }
+        add_edge(S, c[i], fromS);
+        add_edge(c[i], T, toT);
+    }
+    long long result = 0;
+    for (int u : a) {
+        for (int v : b) {
+            result += w[u][v];
+        }
+	}
+	result += dinic(S, T);
+    cout << result << '\n';
+    get_min_cut_nodes(S);
+    for (auto i : a)
+		ans[i]++;
+    for (int i = 0; i < n; i++) {
+        if (ans[i])
+			cout << i + 1 << ' ';
+    }
+	cout << '\n';
+    for (int i = 0; i < n; i++) {
+		if (!ans[i])
+			cout << i + 1 << ' ';
+    }
+	cout << '\n';
+}
