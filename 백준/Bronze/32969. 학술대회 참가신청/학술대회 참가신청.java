@@ -9,16 +9,19 @@ public class Main {
         String[] digital = { "social", "history", "language", "literacy" };
         String[] bigdata = { "bigdata", "public", "society" };
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        while (st.hasMoreTokens()) {
-            String course = st.nextToken();
-            if (Arrays.asList(digital).contains(course)) {
-                System.out.print("digital humanities");
-                break;
+        String s = br.readLine();
+        for (int i = 0; i < s.length(); i++) {
+            for (String str : digital) {
+                if (s.startsWith(str, i)) {
+                    System.out.print("digital humanities");
+                    return;
+                }
             }
-            else if (Arrays.asList(bigdata).contains(course)) {
-                System.out.print("public bigdata");
-                break;
+            for (String str : bigdata) {
+                if (s.startsWith(str, i)) {
+                    System.out.print("public bigdata");
+                    return;
+                }
             }
         }
     }
