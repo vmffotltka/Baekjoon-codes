@@ -1,0 +1,13 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int a, b, c, t; cin >> a >> b >> c >> t;
+    int ans;
+    if (t < 30)
+        ans = a;
+    else
+        ans = a + ((t - 30 + b - 1) / b) * c;
+    cout << ans;
+}
