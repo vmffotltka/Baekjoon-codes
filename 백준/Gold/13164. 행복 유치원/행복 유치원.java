@@ -12,19 +12,17 @@ public class Main {
 
         PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
         st = new StringTokenizer(br.readLine());
-        int pre = -1;
+        int pre = -1, ans = 0;
         for (int i = 0; i < n; i++) {
             int num = Integer.parseInt(st.nextToken());
-            if (pre != -1)
+            if (pre != -1) {
                 pq.offer(num - pre);
+                ans += num - pre;
+            }
             pre = num;
         }
         for (int i = 0; i < k - 1; i++)
-            pq.poll();
-
-        int ans = 0;
-        while (!pq.isEmpty())
-            ans += pq.poll();
+            ans -= pq.poll();
 
         System.out.print(ans);
     }
