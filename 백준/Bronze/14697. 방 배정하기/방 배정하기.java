@@ -14,7 +14,7 @@ public class Main {
 
         for (int i = 0; i * a <= n; i++) {
             for (int j = 0; i * a + j * b <= n; j++) {
-                int remain = n - i * a + j * b;
+                int remain = n - i * a - j * b;
                 if (remain % c == 0) {
                     System.out.print(1);
                     return;
