@@ -2,14 +2,24 @@
 using namespace std;
 
 using ull = unsigned long long;
-using u128 = __uint128_t;
+
+ull mul(ull a, ull b, ull mod) {
+    ull res = 0;
+	a %= mod;
+    while (b > 0) {
+		if (b & 1) res = (res + a) % mod;
+        a = (a * 2) % mod;
+        b >>= 1;
+    }
+	return res;
+}
 
 ull power(ull base, ull exp, ull mod) {
     ull res = 1;
 	base %= mod;
     while (exp > 0) {
-		if (exp & 1) res = (ull)((u128)res * base % mod);
-        base = (ull)((u128)base * base % mod);
+		if (exp & 1) res = mul(res, base, mod);
+		base = mul(base, base, mod);
         exp >>= 1;
     }
     return res;
@@ -57,7 +67,7 @@ ull pollard_rho(ull n) {
     ull g = 1;
 
     auto f = [&](ull x) {
-		return (ull)(((u128)x * x % n + c) % n);
+		return (mul(x, x, n) + c) % n;
 	};
     while (g == 1) {
         x = f(x);
@@ -89,7 +99,7 @@ void factorize(ull n) {
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
-
+    srand(1998);
     ull N; cin >> N;
     factorize(N);
 	sort(factors.begin(), factors.end());
